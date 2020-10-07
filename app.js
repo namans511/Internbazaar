@@ -20,15 +20,15 @@ const fileFilter = (req, file, cb) => {
     file.mimetype === "image/png" ||
     file.mimetype === "image/jpg" ||
     file.mimetype === "image/jpeg"
-  ) {
+    ) {
     cb(null, true);
-  } else {
-    cb(null, false);
-  }
+} else {
+  cb(null, false);
+}
 };
 
 //custom imports
-const config = require("../backend/config");
+const config = require("./config");
 const internshipRoutes = require("./routes/internship");
 const authRoutes = require("./routes/auth");
 const profileRoutes = require("./routes/profile");
@@ -41,7 +41,7 @@ app.use(bodyParser.json()); // application/json
 
 app.use(
   multer({ storage: fileStorage, fileFilter: fileFilter }).single("image")
-);
+  );
 
 //CORS HEADERS
 app.use((req, res, next) => {
@@ -49,7 +49,7 @@ app.use((req, res, next) => {
   res.setHeader(
     "Access-Control-Allow-Methods",
     "OPTIONS, GET, POST, PUT, PATCH, DELETE"
-  );
+    );
   res.setHeader("Access-Control-Allow-Headers", "*");
   next();
 });
@@ -73,16 +73,20 @@ app.use((error, req, res, next) => {
 
 //connecting to mongodb database
 mongoose
-  .connect(config.mongoapikey, {
-    useUnifiedTopology: true,
-    useNewUrlParser: true,
-  })
-  .then((result) => {
-    app.listen(8080);
-    console.log("Server up and running");
-  })
-  .catch((err) => {
-    console.log(err);
-  });
+.connect(config.mongoapikey, {
+  useUnifiedTopology: true,
+  useNewUrlParser: true,
+})
+.then((result) => {
+  let port = process.env.PORT;
+  if (port == null || port == "") {
+    port = 8080;
+  }
+  app.listen(port);
+  console.log("Server up and running");
+})
+.catch((err) => {
+  console.log(err);
+});
 
 console.log("lmao lololol");
