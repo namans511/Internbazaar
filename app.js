@@ -20,11 +20,11 @@ const fileFilter = (req, file, cb) => {
     file.mimetype === "image/png" ||
     file.mimetype === "image/jpg" ||
     file.mimetype === "image/jpeg"
-    ) {
+  ) {
     cb(null, true);
-} else {
-  cb(null, false);
-}
+  } else {
+    cb(null, false);
+  }
 };
 
 //custom imports
@@ -41,7 +41,7 @@ app.use(bodyParser.json()); // application/json
 
 app.use(
   multer({ storage: fileStorage, fileFilter: fileFilter }).single("image")
-  );
+);
 
 //CORS HEADERS
 app.use((req, res, next) => {
@@ -49,7 +49,7 @@ app.use((req, res, next) => {
   res.setHeader(
     "Access-Control-Allow-Methods",
     "OPTIONS, GET, POST, PUT, PATCH, DELETE"
-    );
+  );
   res.setHeader("Access-Control-Allow-Headers", "*");
   next();
 });
@@ -73,20 +73,17 @@ app.use((error, req, res, next) => {
 
 //connecting to mongodb database
 mongoose
-.connect(config.mongoapikey, {
-  useUnifiedTopology: true,
-  useNewUrlParser: true,
-})
-.then((result) => {
-  let port = process.env.PORT;
-  if (port == null || port == "") {
-    port = 8080;
-  }
-  app.listen(port);
-  console.log("Server up and running");
-})
-.catch((err) => {
-  console.log(err);
-});
-
-console.log("lmao lololol");
+  .connect(config.mongoapikey, {
+    useUnifiedTopology: true,
+    useNewUrlParser: true,
+  })
+  .then((result) => {
+    let port = process.env.PORT || 8080;
+    app.listen(port);
+    console.log("Server up and running");
+    app.listen(port);
+    console.log("Server up and running on port " + port);
+  })
+  .catch((err) => {
+    console.log(err);
+  });

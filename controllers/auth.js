@@ -26,12 +26,7 @@ exports.signup = (req, res, next) => {
   const email = req.body.email;
   const userType = req.body.userType;
 
-  let UserType;
-  if (userType == "student") {
-    UserType = Student;
-  } else {
-    UserType = Employer;
-  }
+  let UserType = castUser(userType);
 
   bcryct
     .hash(password, 12)
@@ -42,6 +37,7 @@ exports.signup = (req, res, next) => {
         email: email,
         password: hashedpassword,
         isVerified: "false",
+        imageUrl: "",
       });
       user.save();
 
@@ -78,12 +74,7 @@ exports.login = (req, res, next) => {
   const password = req.body.password;
   const userType = req.params.userType;
 
-  let UserType;
-  if (userType == "student") {
-    UserType = Student;
-  } else {
-    UserType = Employer;
-  }
+  let UserType = castUser(userType);
 
   UserType.findOne({ email: email })
     .then((user) => {
@@ -131,7 +122,7 @@ exports.login = (req, res, next) => {
             //if passwords match sending a token
             const token = jwt.sign(
               {
-                email: user.email,
+                userType: userType,
                 userId: user._id.toString(),
               },
               config.tokenkey
@@ -180,12 +171,7 @@ exports.otpVerification = (req, res, next) => {
       }
 
       let userType = data.userType;
-      let UserType;
-      if (userType == "student") {
-        UserType = Student;
-      } else {
-        UserType = Employer;
-      }
+      let UserType = castUser(userType);
 
       // check if entered otp is valid
       if (data.otp == recievedOtp) {
@@ -199,9 +185,8 @@ exports.otpVerification = (req, res, next) => {
 
           const token = jwt.sign(
             {
-              email: user.email,
+              userType: userType,
               userId: user._id.toString(),
-              loggedIn: "true",
             },
             config.tokenkey
           );
