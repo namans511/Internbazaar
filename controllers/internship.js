@@ -398,10 +398,10 @@ exports.viewresume = (req, res, next) => {
       console.log(data);
       // console.log("outside pdf.end");
       // console.log("you can still do stuff after res");
-      res.status(200).json({ path: data.resume });
       pdfDoc.end(() => {
         console.log("inside pdf.end");
       });
+      res.status(200).json({ path: data.resume });
     })
     .catch((err) => {
       console.log(err);
