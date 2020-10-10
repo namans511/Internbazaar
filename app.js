@@ -36,8 +36,8 @@ app.use(express.static(path.join(__dirname, "resume")));
 app.use("/images", express.static(path.join(__dirname, "images")));
 
 //app.use("/images", express.static("images"));
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json()); // application/json
+app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
+app.use(bodyParser.json({ limit: "50mb", extended: true })); // application/json
 
 app.use(
   multer({ storage: fileStorage, fileFilter: fileFilter }).single("image")
